@@ -1,5 +1,9 @@
 var LocalStrategy   = require('passport-local').Strategy;
-var bCrypt = require('bcrypt-nodejs');
+const bCrypt = require('bcrypt-nodejs');
+
+const mongoose = require('mongoose');
+var User = mongoose.model('User');
+var Post = mongoose.model('Post');
 //temporary data store
 var users = {};
 module.exports = function(passport){
@@ -44,20 +48,30 @@ module.exports = function(passport){
 			passReqToCallback : true // allows us to pass back the entire request to the callback
 		},
 		function(req, username, password, done) {
+			User.findOne({username: username},function(err, user){
+				if(err){
+					return done(err,false);
+				}
+				if(user){
+					//user already signed up, so it's not possible to to signed it once again
+					return done('username already taken',false);
+				}
+				var user = new User();
+				user.username = username;
+				user.password = createHash(password);
+				user.save(function(err, user){
+					if(err){
+						return done(err, user);
+					}
+					console.log('user successfully signed up: '+username);
+					return done(null,user);
+				});
 
+			});
 			if (users[username]){
 				console.log('User already exists with username: ' + username);
 				return done(null, false);
-			}
-	
-			//store user in memory 
-			users[username] = {
-				username: username,
-				password: createHash(password)
-			}
-			
-			console.log(users[username].username + ' Registration successful'+' crypted: '+users[username].password);
-			return done(null, users[username]);
+			}		
 		})
 	);
 	
