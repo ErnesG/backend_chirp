@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 const mongoose = require( 'mongoose' );
-/* var User = mongoose.model('User');
-var Post = mongoose.model('Post'); */
+var User = mongoose.model('User');
+var Post = mongoose.model('Post');
 
 //Used for routes that must be authenticated.
 function isAuthenticated (req, res, next) {
