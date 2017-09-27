@@ -1,5 +1,8 @@
 var express = require('express');
 var router = express.Router();
+const mongoose = require( 'mongoose' );
+/* var User = mongoose.model('User');
+var Post = mongoose.model('Post'); */
 
 //Used for routes that must be authenticated.
 function isAuthenticated (req, res, next) {
@@ -27,15 +30,30 @@ router.route('/posts')
 	
 	//create a new post
 	.post(function(req, res){
-
-		//TODO create a new post in the database
-		res.send({message:"TODO create a new post in the database"});
+		var post = new Post();
+		post.text = req.body.text;
+		post.created_by= req.body.created_by;
+		post.save(function(err,post){
+			if(err){
+				return res.send(500,err);
+			}
+			return res.json(post);
+		});
+		//res.send({message:"TODO get all the posts in the database"});
+		
+		
 	})
 
 	.get(function(req, res){
+		Post.find(function(err,posts){
+			if(err){
+				return res.send(500,err);
+			}
+			return res.send(posts);
+		});
 
 		//TODO get all the posts in the database
-		res.send({message:"TODO get all the posts in the database"});
+		//res.send({message:"TODO get all the posts in the database"});
 	})
 
 //api for a specfic post
