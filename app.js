@@ -2,18 +2,19 @@ const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');
 const logger = require('morgan');
-const passport = require('passport');
 const session = require('express-session');
-
+const passport = require('passport');
+require('./models/Post');
+require('./models/User');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
-const api = require('./routes/api');
+var api = require('./routes/api');
 const authenticate = require('./routes/authenticate')(passport);
 const mongoose = require('mongoose');
 // setup mongodb connection
 mongoose.connect("mongodb://localhost:27017/chirp-test");
-require('./models/models')
+
 const app = express();
 
 // view engine setup
