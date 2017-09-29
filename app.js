@@ -9,7 +9,7 @@ require('./models/User');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
-var api = require('./routes/api');
+const api = require('./routes/api');
 const authenticate = require('./routes/authenticate')(passport);
 const mongoose = require('mongoose');
 // setup mongodb connection

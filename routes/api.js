@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const mongoose = require( 'mongoose' );
-var User = mongoose.model('User');
+//var User = mongoose.model('User');
 var Post = mongoose.model('Post');
 
 //Used for routes that must be authenticated.
@@ -59,17 +59,44 @@ router.route('/posts')
 //api for a specfic post
 router.route('/posts/:id')
 	
-	//create
+	
 	.put(function(req,res){
-		return res.send({message:'TODO modify an existing post by using param ' + req.param.id});
+		Post.findById(req.params.id,function(err,post){
+			if(err){
+				return res.send(err);
+			}
+			post.created_by = req.body.created_by
+			post.text = req.body.text;
+			post.save(function(err,post){
+				if(err){
+					return res.send(err);
+				}
+				return res.json(post);
+			});
+		});
+		//return res.send({message:'TODO modify an existing post by using param ' + req.param.id});
 	})
 
 	.get(function(req,res){
-		return res.send({message:'TODO get an existing post by using param ' + req.param.id});
+		Post.findById(req.params.id,function(err,post){
+			if(err){
+				return res.send(err);
+			}
+			return res.send(post);
+		});
+		
 	})
 
 	.delete(function(req,res){
-		return res.send({message:'TODO delete an existing post by using param ' + req.param.id})
+		Post.remove({
+			_id:req.params.id
+		},function(err){
+			if(err){
+				res.send(err);
+			}
+			res.json("deleted")
+		})
+		//return res.send({message:'TODO delete an existing post by using param ' + req.param.id})
 	});
 
 module.exports = router;
